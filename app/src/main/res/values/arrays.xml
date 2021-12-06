@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="card">
+        <item>@drawable/card_club_01</item>
+        <item>@drawable/card_club_02</item>
+        <item>@drawable/card_club_03</item>
+        <item>@drawable/card_club_04</item>
+        <item>@drawable/card_club_05</item>
+        <item>@drawable/card_club_06</item>
+        <item>@drawable/card_club_07</item>
+        <item>@drawable/card_club_08</item>
+        <item>@drawable/card_club_09</item>
+        <item>@drawable/card_club_10</item>
+        <item>@drawable/card_club_11</item>
+        <item>@drawable/card_club_12</item>
+        <item>@drawable/card_club_13</item>
+    </array>
+</resources>

@@ -1,15 +1,31 @@
 package com.example.flickhold;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+
+import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
-public class MainActivity extends AppCompatActivity implements OnTouchListener, OnClickListener {
 
-    private CustomImageView imageView;
+public class MainActivity extends AppCompatActivity implements OnTouchListener{
+
+    private ImageView [] cards;
+    private LinearLayout.LayoutParams layoutParams;
+    private FrameLayout.LayoutParams frameParams;
+    private FrameLayout layout;
+    private int imageWidth, imageHeight;
+    private CustomImageView imageView2;
     //private float preDx, preDy;
     //private TextView textView;
     //private TranslateAnimation translateAnimation;
@@ -22,12 +38,55 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener, 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
+        // リニアレイアウトのインスタンス生成
+        //LinearLayout layout = new LinearLayout(this);
+        layout = new FrameLayout(this);
+        //レイアウトの縦横サイズをMATCH_PARENTにする
+        layout.setLayoutParams(new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
 
-        //textView = findViewById(R.id.textView);
+        // レイアウト中央寄せ
+        //layout.setGravity(Gravity.CENTER);
+        layout.setForegroundGravity(Gravity.CENTER);
 
-        imageView = this.findViewById(R.id.imageView);
-        imageView.setOnTouchListener(this);
+        // 背景色
+        //layout.setBackgroundColor(Color.argb(0xff, 0xaa, 0xcc, 0xff));
+        layout.setBackgroundColor(Color.argb(0xff, 0xaa, 0xcc, 0xff));
+        //setContentViewにlayoutを設定
+        //setContentView(layout);
+        setContentView(layout);
+
+        // 画像のサイズの設定
+        imageWidth = 300;
+        imageHeight = 300;
+
+        //画像の縦横サイズをimageViewのサイズとして設定
+        layoutParams = new LinearLayout.LayoutParams(imageWidth, imageHeight);
+        frameParams = new FrameLayout.LayoutParams(imageWidth,imageHeight);
+
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        cards = new ImageView[13];
+        TypedArray cardsData = getResources().obtainTypedArray(R.array.card);
+        for(int i=0;i < cards.length; i++){
+            Drawable drawable = cardsData.getDrawable(i);
+            cards[i] = new ImageView(this);
+            cards[i].setImageDrawable(drawable);
+            cards[i].setLayoutParams(frameParams);
+            //layoutにimageViewを追加
+            layout.addView(cards[i]);
+            cards[i].setOnTouchListener(this);
+            //cardの位置の設定
+            cards[i].setTranslationX(layout.getWidth()/2 - imageWidth/2);
+            cards[i].setTranslationY(layout.getHeight()/2 - imageHeight/2);
+
+        }
+
 
     }
 
@@ -68,58 +127,9 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener, 
 
             case MotionEvent.ACTION_UP:
 
-////                int trashLeft    = trash.getLeft() + trash.getWidth()/2;
-////                int trashTop     = trash.getTop()  + trash.getHeight()/2;
-//                int targetRight  = v.getLeft() + v.getWidth();
-//                int targetBottom = v.getTop() + v.getHeight();
-//
-////                if (targetRight > trashLeft && targetBottom > trashTop) {
-////                    frameLayout01.removeView(v);
-////                }
                 break;
         }
         return true;
     }
 
-//    private void startTranslate(float fromX, float toX, float fromY, float toY){
-//        // 設定を切り替え可能
-//        Log.d("Move","ACTION_MOVE: fromX="+ fromX + ", toX=" + toX + ", fromY=" + fromY + ", toY=" + toY);
-//        int type = 0;
-//        if(type == 0){
-//            // TranslateAnimation(int fromXType, float fromXValue, int toXType, float toXValue, int fromYType, float fromYValue, int toYType, float toYValue)
-//            translateAnimation = new TranslateAnimation(
-//                    Animation.ABSOLUTE, fromX,
-//                    Animation.ABSOLUTE, toX,
-//                    Animation.ABSOLUTE, fromY,
-//                    Animation.ABSOLUTE, toY);
-//        }
-//        else if(type == 1){
-//            translateAnimation = new TranslateAnimation(
-//                    Animation.RELATIVE_TO_SELF, 0.0f,
-//                    Animation.RELATIVE_TO_SELF, 0.9f,
-//                    Animation.RELATIVE_TO_SELF, 0.0f,
-//                    Animation.RELATIVE_TO_SELF, 1.8f);
-//        }
-//        else if(type ==2){
-//            translateAnimation = new TranslateAnimation(
-//                    Animation.RELATIVE_TO_PARENT, 0.0f,
-//                    Animation.RELATIVE_TO_PARENT, 0.4f,
-//                    Animation.RELATIVE_TO_PARENT, 0.0f,
-//                    Animation.RELATIVE_TO_PARENT, 0.6f);
-//        }
-//
-//        // animation時間 
-//        translateAnimation.setDuration(2000);
-//        // 繰り返し回数
-//        translateAnimation.setRepeatCount(0);
-//        // animationが終わったそのまま表示にする
-//        translateAnimation.setFillAfter(true);
-//        //アニメーションの開始
-//        imageView.startAnimation(translateAnimation);
-//    }
-
-    @Override
-    public void onClick(View v) {
-
-    }
 }

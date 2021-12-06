@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">flick&amp;hold</string>
     <string name="button">Button</string>
-    <string name="todo">TODO</string>
+    <string name="todo1">TODO1</string>
     <string name="textview">TextView</string>
+    <string name="todo2">TODO2</string>
+    <string name="todo13">TODO13</string>
+    <string name="todo11">TODO11</string>
+    <string name="todo8">TODO8</string>
+    <string name="todo6">TODO6</string>
+    <string name="todo9">TODO9</string>
+    <string name="todo12">TODO12</string>
+    <string name="todo10">TODO10</string>
+    <string name="todo7">TODO7</string>
+    <string name="todo5">TODO5</string>
+    <string name="todo4">TODO4</string>
+    <string name="todo3">TODO3</string>
 </resources>

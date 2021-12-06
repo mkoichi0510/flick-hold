@@ -10,6 +10,9 @@ public class CustomImageView extends AppCompatImageView{
         super(context, attrs);
     }
 
+    public CustomImageView(Context context) {
+        super(context);
+    }
     @Override
     public boolean performClick() {
         super.performClick();
