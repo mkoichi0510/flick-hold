@@ -1,11 +1,13 @@
 package com.example.flickhold;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,10 +19,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 
 public class MainActivity extends AppCompatActivity implements OnTouchListener{
 
     private ImageView [] cards;
+    private ArrayList<ImageView> trumps;
     private LinearLayout.LayoutParams layoutParams;
     private FrameLayout.LayoutParams frameParams;
     private FrameLayout layout;
@@ -68,24 +74,37 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        cards = new ImageView[13];
+        //cards = new ImageView[13];
+        trumps = new ArrayList<ImageView>();
         TypedArray cardsData = getResources().obtainTypedArray(R.array.card);
-        for(int i=0;i < cards.length; i++){
+        //トランプデータの格納
+        for(int i=0;i < 13; i++){
             Drawable drawable = cardsData.getDrawable(i);
-            cards[i] = new ImageView(this);
-            cards[i].setImageDrawable(drawable);
-            cards[i].setLayoutParams(frameParams);
-            //layoutにimageViewを追加
-            layout.addView(cards[i]);
-            cards[i].setOnTouchListener(this);
-            //cardの位置の設定
-            cards[i].setTranslationX(layout.getWidth()/2 - imageWidth/2);
-            cards[i].setTranslationY(layout.getHeight()/2 - imageHeight/2);
-
+            //cards[i] = new ImageView(this);
+            ImageView card = new ImageView(this);
+            card.setImageDrawable(drawable);
+            card.setLayoutParams(frameParams);
+            trumps.add(card);
+            //card.refreshDrawableState();
+            //trumps.get(i).setImageDrawable(drawable);
+            //trumps.get(i).setLayoutParams(frameParams);
         }
+
+        ArrayList<ImageView> instant = new ArrayList<ImageView>(trumps);
+        Collections.shuffle(instant);
+        instant.forEach(trump -> {
+            //layoutにimageViewを追加
+            layout.addView(trump);
+            trump.setOnTouchListener(this);
+            //cardの位置の設定
+            trump.setTranslationX(layout.getWidth()/2 - imageWidth/2);
+            trump.setTranslationY(layout.getHeight()/2 - imageHeight/2);
+        });
+
 
 
     }
