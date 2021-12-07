@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +24,7 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity implements OnTouchListener{
@@ -72,15 +76,11 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
         layoutParams = new LinearLayout.LayoutParams(imageWidth, imageHeight);
         frameParams = new FrameLayout.LayoutParams(imageWidth,imageHeight);
 
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        //cards = new ImageView[13];
         trumps = new ArrayList<ImageView>();
         TypedArray cardsData = getResources().obtainTypedArray(R.array.card);
+
+        //カードの角度設定用のランダム関数
+        Random random = new Random();
         //トランプデータの格納
         for(int i=0;i < 13; i++){
             Drawable drawable = cardsData.getDrawable(i);
@@ -88,11 +88,30 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
             ImageView card = new ImageView(this);
             card.setImageDrawable(drawable);
             card.setLayoutParams(frameParams);
+            //getDrawableメソッドで取り戻したものを、BitmapDrawable形式にキャストする
+            BitmapDrawable bd = (BitmapDrawable)card.getDrawable();
+            //getBitmapメソッドでビットマップファイルを取り出す
+            Bitmap bmp = bd.getBitmap();
+            //回転させる
+            Matrix matrix = new Matrix();
+            matrix.postRotate(random.nextInt(360));
+            //Bitmap回転させる
+            Bitmap flippedBmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, false);
+            //加工したBitmapを元のImageViewにセットする
+            card.setImageDrawable(new BitmapDrawable(flippedBmp));
             trumps.add(card);
             //card.refreshDrawableState();
             //trumps.get(i).setImageDrawable(drawable);
             //trumps.get(i).setLayoutParams(frameParams);
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        //cards = new ImageView[13];
+
 
         ArrayList<ImageView> instant = new ArrayList<ImageView>(trumps);
         Collections.shuffle(instant);
