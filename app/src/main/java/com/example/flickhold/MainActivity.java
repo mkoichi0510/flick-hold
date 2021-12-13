@@ -18,9 +18,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,10 +36,11 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
     private LinearLayout.LayoutParams layoutParams;
     private FrameLayout.LayoutParams frameParams;
     private FrameLayout layout;
+
     private int imageWidth, imageHeight;
     private CustomImageView imageView2;
     //private float preDx, preDy;
-    //private TextView textView;
+
     //private TranslateAnimation translateAnimation;
     private int targetLocalX;
     private int targetLocalY;
@@ -52,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
         // リニアレイアウトのインスタンス生成
         //LinearLayout layout = new LinearLayout(this);
         layout = new FrameLayout(this);
+
+
         //レイアウトの縦横サイズをMATCH_PARENTにする
         layout.setLayoutParams(new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
@@ -64,8 +69,14 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
         // 背景色
         //layout.setBackgroundColor(Color.argb(0xff, 0xaa, 0xcc, 0xff));
         layout.setBackgroundColor(Color.argb(0xff, 0xaa, 0xcc, 0xff));
+
+
+
+
+
+        //ボタンを押したらタイマーをスタートさせゲーム画面へ移動する処理を記述する
+
         //setContentViewにlayoutを設定
-        //setContentView(layout);
         setContentView(layout);
 
         // 画像のサイズの設定
@@ -79,10 +90,12 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
         trumps = new ArrayList<ImageView>();
         TypedArray cardsData = getResources().obtainTypedArray(R.array.card);
 
+
         //カードの角度設定用のランダム関数
         Random random = new Random();
+
         //トランプデータの格納
-        for(int i=0;i < 13; i++){
+        for(int i=0;i < cardsData.length(); i++){
             Drawable drawable = cardsData.getDrawable(i);
             //cards[i] = new ImageView(this);
             ImageView card = new ImageView(this);
@@ -104,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
             //trumps.get(i).setImageDrawable(drawable);
             //trumps.get(i).setLayoutParams(frameParams);
         }
+
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -127,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
 
 
     }
+
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
