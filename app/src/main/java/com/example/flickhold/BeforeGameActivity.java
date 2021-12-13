@@ -21,6 +21,8 @@ public class BeforeGameActivity extends AppCompatActivity {
 
     private LinearLayout beforeGameLayout;
     private TextView textView;
+    private FrameLayout.LayoutParams frameParams;
+    private int imageWidth, imageHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +47,7 @@ public class BeforeGameActivity extends AppCompatActivity {
         textView.setLayoutParams(textLayoutParams);
         beforeGameLayout.addView(textView);
 
-        // ボタンの設定
-        Button button = new Button(this);
-        button.setText("ゲームスタート");
 
-        LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-
-        button.setLayoutParams(buttonLayoutParams);
-        beforeGameLayout.addView(button);
-        button.setOnClickListener(startButtonClickListener);
 
         setContentView(beforeGameLayout);
         //目標カード決定用のランダム関数
@@ -68,9 +60,24 @@ public class BeforeGameActivity extends AppCompatActivity {
 
         Drawable rand = cardsData.getDrawable(targetNum);
         target.setImageDrawable(rand);
+        // 画像のサイズの設定
+        imageWidth = 300;
+        imageHeight = 300;
+        frameParams = new FrameLayout.LayoutParams(imageWidth,imageHeight);
+        target.setLayoutParams(frameParams);
         beforeGameLayout.addView(target);
 
+        // ボタンの設定
+        Button button = new Button(this);
+        button.setText("ゲームスタート");
 
+        LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        button.setLayoutParams(buttonLayoutParams);
+        beforeGameLayout.addView(button);
+        button.setOnClickListener(startButtonClickListener);
     }
 
     View.OnClickListener startButtonClickListener = new View.OnClickListener() {
