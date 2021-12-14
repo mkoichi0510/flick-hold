@@ -27,5 +27,31 @@
         <item>@drawable/card_diamond_11</item>
         <item>@drawable/card_diamond_12</item>
         <item>@drawable/card_diamond_13</item>
+        <item>@drawable/card_heart_01</item>
+        <item>@drawable/card_heart_02</item>
+        <item>@drawable/card_heart_03</item>
+        <item>@drawable/card_heart_04</item>
+        <item>@drawable/card_heart_05</item>
+        <item>@drawable/card_heart_06</item>
+        <item>@drawable/card_heart_07</item>
+        <item>@drawable/card_heart_08</item>
+        <item>@drawable/card_heart_09</item>
+        <item>@drawable/card_heart_10</item>
+        <item>@drawable/card_heart_11</item>
+        <item>@drawable/card_heart_12</item>
+        <item>@drawable/card_heart_13</item>
+        <item>@drawable/card_spade_01</item>
+        <item>@drawable/card_spade_02</item>
+        <item>@drawable/card_spade_03</item>
+        <item>@drawable/card_spade_04</item>
+        <item>@drawable/card_spade_05</item>
+        <item>@drawable/card_spade_06</item>
+        <item>@drawable/card_spade_07</item>
+        <item>@drawable/card_spade_08</item>
+        <item>@drawable/card_spade_09</item>
+        <item>@drawable/card_spade_10</item>
+        <item>@drawable/card_spade_11</item>
+        <item>@drawable/card_spade_12</item>
+        <item>@drawable/card_spade_13</item>
     </array>
 </resources>

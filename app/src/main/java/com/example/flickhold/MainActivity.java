@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
     private int totalScore;
     private int remainTime;
 
+    private ArrayList<Bitmap> flippedBmp;
+
     //時間関連
     private TextView timerText;
     private SimpleDateFormat displayFormat =
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
         frameParams = new FrameLayout.LayoutParams(imageWidth,imageHeight);
 
         trumps = new ArrayList<CardData>();
+        flippedBmp = new ArrayList<Bitmap>();
         TypedArray cardsData = getResources().obtainTypedArray(R.array.card);
 
 
@@ -150,9 +153,12 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
             Matrix matrix = new Matrix();
             matrix.postRotate(random.nextInt(360));
             //Bitmap回転させる
-            Bitmap flippedBmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, false);
+            flippedBmp.add(Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, false));
             //加工したBitmapを元のImageViewにセットする
-            card.setImageDrawable(new BitmapDrawable(flippedBmp));
+            card.setImageDrawable(new BitmapDrawable(flippedBmp.get(i)));
+            //メモリの解放
+//            flippedBmp.recycle();
+//            flippedBmp = null;
             card.setId(i);
 
             CardData instant = new CardData();
@@ -234,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
             case MotionEvent.ACTION_UP:
                 finish = System.currentTimeMillis();
                 //目標カード選択判定
-                if(finish - start > 3000){
+                if(finish - start > 2000){
                     //layout.removeAllViews();
                     if(v.getId() == targetNum){
                         countDown.cancel();
@@ -245,6 +251,14 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
                                 intent.putExtra("getPoint", trump.GetCardPoint());
                         }
                         intent.putExtra("totalScore", totalScore);
+                        //メモリの解放
+                        for(CardData trump:trumps){
+                            trump.GetImageView().setImageDrawable(null);
+                        }
+                        for(Bitmap bit:flippedBmp){
+                            bit.recycle();
+                            bit = null;
+                        }
                         startActivity(intent);
                     }
                 }
@@ -267,6 +281,14 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
             intent.putExtra("remainTime", 0);
             intent.putExtra("getPoint", 0);
             intent.putExtra("totalScore", totalScore);
+            //メモリの解放
+            for(CardData trump:trumps){
+                trump.GetImageView().setImageDrawable(null);
+            }
+            for(Bitmap bit:flippedBmp){
+                bit.recycle();
+                bit = null;
+            }
             startActivity(intent);
         }
 
