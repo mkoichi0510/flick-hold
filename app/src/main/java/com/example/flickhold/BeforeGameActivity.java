@@ -23,6 +23,7 @@ public class BeforeGameActivity extends AppCompatActivity {
     private TextView textView;
     private FrameLayout.LayoutParams frameParams;
     private int imageWidth, imageHeight;
+    private int targetNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class BeforeGameActivity extends AppCompatActivity {
 
         // 目標カードの設定
         ImageView target = new ImageView(this);
-        int targetNum = random.nextInt(cardsData.length());
+        targetNum = random.nextInt(cardsData.length());
 
         Drawable rand = cardsData.getDrawable(targetNum);
         target.setImageDrawable(rand);
@@ -83,8 +84,9 @@ public class BeforeGameActivity extends AppCompatActivity {
     View.OnClickListener startButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra("targetNum" ,targetNum);
+            startActivity(intent);
         }
     };
 

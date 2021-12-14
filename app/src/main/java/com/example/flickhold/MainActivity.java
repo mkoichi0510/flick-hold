@@ -4,14 +4,17 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -24,18 +27,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity implements OnTouchListener{
 
     private ImageView [] cards;
-    private ArrayList<ImageView> trumps;
+    private ArrayList<CardData> trumps;
     private LinearLayout.LayoutParams layoutParams;
     private FrameLayout.LayoutParams frameParams;
     private FrameLayout layout;
+    private int targetNum;
+    private long start;
+    private long finish;
 
     private int imageWidth, imageHeight;
     private CustomImageView imageView2;
@@ -48,9 +56,24 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
     private int screenX;
     private int screenY;
 
+    //時間関連
+    private TextView timerText;
+    private SimpleDateFormat displayFormat =
+            new SimpleDateFormat("mm:ss", Locale.US);
+
+    private SimpleDateFormat dataFormat =
+            new SimpleDateFormat("sss", Locale.US);
+    private CountDown countDown;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
+
+        targetNum = (int)getIntent().getSerializableExtra("targetNum");
+
         //setContentView(R.layout.activity_main);
         // リニアレイアウトのインスタンス生成
         //LinearLayout layout = new LinearLayout(this);
@@ -79,6 +102,19 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
         //setContentViewにlayoutを設定
         setContentView(layout);
 
+        // 3分= 3x60x1000 = 180000 msec
+        long countNumber = 180000;
+        // インターバル msec
+        long interval = 10;
+        timerText = new TextView(this);
+        timerText.setText(displayFormat.format(0));
+        // インスタンス生成
+        // CountDownTimer(long millisInFuture, long countDownInterval)
+        countDown = new CountDown(countNumber, interval);
+        layout.addView(timerText);
+        // 開始
+        countDown.start();
+
         // 画像のサイズの設定
         imageWidth = 300;
         imageHeight = 300;
@@ -87,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
         layoutParams = new LinearLayout.LayoutParams(imageWidth, imageHeight);
         frameParams = new FrameLayout.LayoutParams(imageWidth,imageHeight);
 
-        trumps = new ArrayList<ImageView>();
+        trumps = new ArrayList<CardData>();
         TypedArray cardsData = getResources().obtainTypedArray(R.array.card);
 
 
@@ -100,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
             //cards[i] = new ImageView(this);
             ImageView card = new ImageView(this);
             card.setImageDrawable(drawable);
+            //card.setBackgroundResource(R.drawable.boder);
+
             card.setLayoutParams(frameParams);
             //getDrawableメソッドで取り戻したものを、BitmapDrawable形式にキャストする
             BitmapDrawable bd = (BitmapDrawable)card.getDrawable();
@@ -112,7 +150,17 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
             Bitmap flippedBmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, false);
             //加工したBitmapを元のImageViewにセットする
             card.setImageDrawable(new BitmapDrawable(flippedBmp));
-            trumps.add(card);
+            card.setId(i);
+
+            CardData instant = new CardData();
+            instant.SetImageView(card);
+            instant.SetCardNum(i);
+            trumps.add(instant);
+
+            //layoutにimageViewを追加
+            layout.addView(card);
+            card.setOnTouchListener(this);
+
             //card.refreshDrawableState();
             //trumps.get(i).setImageDrawable(drawable);
             //trumps.get(i).setLayoutParams(frameParams);
@@ -126,20 +174,16 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         //cards = new ImageView[13];
-
-
-        ArrayList<ImageView> instant = new ArrayList<ImageView>(trumps);
-        Collections.shuffle(instant);
-        instant.forEach(trump -> {
-            //layoutにimageViewを追加
-            layout.addView(trump);
-            trump.setOnTouchListener(this);
+        Collections.shuffle(trumps);
+        for(int i=0; i < trumps.size();i++) {
+            CardData card = trumps.get(i);
+            card.SetCardPoint((trumps.size() - (i+1))*5);//重なっている深さに応じて獲得ポイントを変える
+            ImageView trump = card.GetImageView();
             //cardの位置の設定
-            trump.setTranslationX(layout.getWidth()/2 - imageWidth/2);
-            trump.setTranslationY(layout.getHeight()/2 - imageHeight/2);
-        });
-
-
+            trump.setTranslationX(layout.getWidth() / 2 - imageWidth / 2);
+            trump.setTranslationY(layout.getHeight() / 2 - imageHeight / 2);
+        }
+        //ArrayList<ImageView> instant = new ArrayList<ImageView>(trumps);
 
     }
 
@@ -152,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
         v.performClick();
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-
+                start = System.currentTimeMillis();
                 targetLocalX = v.getLeft();
                 targetLocalY = v.getTop();
 
@@ -180,10 +224,46 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
                 break;
 
             case MotionEvent.ACTION_UP:
-
+                finish = System.currentTimeMillis();
+                //目標カード選択判定
+                if(finish - start > 5000){
+                    //layout.removeAllViews();
+                    if(v.getId() == targetNum){
+                        countDown.cancel();
+                        Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
+                        intent.putExtra("remainTime", timerText.getText());
+                        intent.putExtra("getPoint", trumps.get(v.getId()).GetCardPoint());
+                        startActivity(intent);
+                    }
+                }
                 break;
         }
         return true;
     }
 
+    class CountDown extends CountDownTimer {
+
+        CountDown(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onFinish() {
+            // 完了
+            //timerText.setText(dataFormat.format(0));
+        }
+
+        // インターバルで呼ばれる
+        @Override
+        public void onTick(long millisUntilFinished) {
+            // 残り時間を分、秒、ミリ秒に分割
+            //long mm = millisUntilFinished / 1000 / 60;
+            //long ss = millisUntilFinished / 1000 % 60;
+            //long ms = millisUntilFinished - ss * 1000 - mm * 1000 * 60;
+            //timerText.setText(String.format("%1$02d:%2$02d.%3$03d", mm, ss, ms));
+
+            timerText.setText(displayFormat.format(millisUntilFinished));
+
+        }
+    }
 }
