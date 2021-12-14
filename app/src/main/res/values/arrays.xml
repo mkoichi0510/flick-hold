@@ -14,5 +14,18 @@
         <item>@drawable/card_club_11</item>
         <item>@drawable/card_club_12</item>
         <item>@drawable/card_club_13</item>
+        <item>@drawable/card_diamond_01</item>
+        <item>@drawable/card_diamond_02</item>
+        <item>@drawable/card_diamond_03</item>
+        <item>@drawable/card_diamond_04</item>
+        <item>@drawable/card_diamond_05</item>
+        <item>@drawable/card_diamond_06</item>
+        <item>@drawable/card_diamond_07</item>
+        <item>@drawable/card_diamond_08</item>
+        <item>@drawable/card_diamond_09</item>
+        <item>@drawable/card_diamond_10</item>
+        <item>@drawable/card_diamond_11</item>
+        <item>@drawable/card_diamond_12</item>
+        <item>@drawable/card_diamond_13</item>
     </array>
 </resources>

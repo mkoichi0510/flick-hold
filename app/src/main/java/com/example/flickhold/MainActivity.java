@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -56,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
     private int screenX;
     private int screenY;
 
+    private int totalScore;
+    private int remainTime;
+
     //時間関連
     private TextView timerText;
     private SimpleDateFormat displayFormat =
@@ -69,9 +73,8 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-
+        totalScore = (int)getIntent().getSerializableExtra("totalScore");
+        remainTime = (int)getIntent().getSerializableExtra("remainTime");
         targetNum = (int)getIntent().getSerializableExtra("targetNum");
 
         //setContentView(R.layout.activity_main);
@@ -102,15 +105,15 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
         //setContentViewにlayoutを設定
         setContentView(layout);
 
-        // 3分= 3x60x1000 = 180000 msec
-        long countNumber = 180000;
+
         // インターバル msec
         long interval = 10;
         timerText = new TextView(this);
+        timerText.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20.0f);
         timerText.setText(displayFormat.format(0));
         // インスタンス生成
         // CountDownTimer(long millisInFuture, long countDownInterval)
-        countDown = new CountDown(countNumber, interval);
+        countDown = new CountDown(remainTime, interval);
         layout.addView(timerText);
         // 開始
         countDown.start();
@@ -157,13 +160,19 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
             instant.SetCardNum(i);
             trumps.add(instant);
 
-            //layoutにimageViewを追加
-            layout.addView(card);
+
             card.setOnTouchListener(this);
 
             //card.refreshDrawableState();
             //trumps.get(i).setImageDrawable(drawable);
             //trumps.get(i).setLayoutParams(frameParams);
+        }
+        Collections.shuffle(trumps);
+        for(int i=0; i < trumps.size();i++) {
+            CardData card = trumps.get(i);
+            card.SetCardPoint((trumps.size() - i)*5);//重なっている深さに応じて獲得ポイントを変える
+            //layoutにimageViewを追加
+            layout.addView(trumps.get(i).GetImageView());
         }
 
 
@@ -174,10 +183,9 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         //cards = new ImageView[13];
-        Collections.shuffle(trumps);
+
         for(int i=0; i < trumps.size();i++) {
             CardData card = trumps.get(i);
-            card.SetCardPoint((trumps.size() - (i+1))*5);//重なっている深さに応じて獲得ポイントを変える
             ImageView trump = card.GetImageView();
             //cardの位置の設定
             trump.setTranslationX(layout.getWidth() / 2 - imageWidth / 2);
@@ -226,13 +234,17 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
             case MotionEvent.ACTION_UP:
                 finish = System.currentTimeMillis();
                 //目標カード選択判定
-                if(finish - start > 5000){
+                if(finish - start > 3000){
                     //layout.removeAllViews();
                     if(v.getId() == targetNum){
                         countDown.cancel();
                         Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
                         intent.putExtra("remainTime", timerText.getText());
-                        intent.putExtra("getPoint", trumps.get(v.getId()).GetCardPoint());
+                        for(CardData trump:trumps){
+                            if(trump.GetCardNum() == targetNum)
+                                intent.putExtra("getPoint", trump.GetCardPoint());
+                        }
+                        intent.putExtra("totalScore", totalScore);
                         startActivity(intent);
                     }
                 }
@@ -251,6 +263,11 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener{
         public void onFinish() {
             // 完了
             //timerText.setText(dataFormat.format(0));
+            Intent intent = new Intent(getApplicationContext(), TotalResultActivity.class);
+            intent.putExtra("remainTime", 0);
+            intent.putExtra("getPoint", 0);
+            intent.putExtra("totalScore", totalScore);
+            startActivity(intent);
         }
 
         // インターバルで呼ばれる

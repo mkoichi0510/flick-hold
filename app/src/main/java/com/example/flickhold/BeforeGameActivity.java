@@ -25,10 +25,15 @@ public class BeforeGameActivity extends AppCompatActivity {
     private int imageWidth, imageHeight;
     private int targetNum;
 
+    private int totalScore;
+    private int remainTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_before_game);
+        totalScore = (int)getIntent().getSerializableExtra("totalScore");
+        remainTime = (int)getIntent().getSerializableExtra("remainTime");
         beforeGameLayout = new LinearLayout(this);
         // orientationは垂直方向
         beforeGameLayout.setOrientation(LinearLayout.VERTICAL);
@@ -86,6 +91,8 @@ public class BeforeGameActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.putExtra("targetNum" ,targetNum);
+            intent.putExtra("remainTime",remainTime);
+            intent.putExtra("totalScore", totalScore);
             startActivity(intent);
         }
     };

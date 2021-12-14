@@ -4,46 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ResultActivity"
+    tools:context=".TotalResultActivity"
     android:orientation="vertical"
     android:gravity="center">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="途中経過"
+        android:text="最終結果"
         android:textSize="30sp"/>
-
-    <TextView
-        android:id="@+id/scoreLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="150"
-        android:textSize="40sp"
-        android:layout_marginTop="80dp"/>
 
     <TextView
         android:id="@+id/totalScoreLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Total Score : 0"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:layout_marginTop="80dp"/>
 
     <TextView
-        android:id="@+id/remainTimeLabel"
+        android:id="@+id/highScoreLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RemainTime : 300"
+        android:text="HighScore : 300"
         android:textSize="30sp"
         android:layout_marginTop="80dp"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="続きのゲームへ"
+        android:text="タイトルへ"
         android:layout_marginTop="50dp"
-        android:onClick="nextGame"
+        android:onClick="BackGameTitle"
         />
 
 </LinearLayout>
